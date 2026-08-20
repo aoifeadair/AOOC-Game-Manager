@@ -1,0 +1,27 @@
+{
+    "workbench.startupEditor":"none",
+    "task.allowAutomaticTasks": "on",
+    "editor.minimap.enabled": false,
+    "editor.inlayHints.enabled": "off",
+    "files.exclude": {
+        "**/.devcontainer": true,
+        "**/.vscode": true,
+        "**/.gitignore": true,
+        "**/.github": true,
+    },
+    "java.server.launchMode": "Standard",
+    "java.dependency.packagePresentation": "flat",
+    "java.project.sourcePaths": [
+        "src",
+        "./"
+    ],
+    "java.project.explorer.showNonJavaResources": true,
+    "redhat.telemetry.enabled": false,
+    "git.autofetch": true,
+    "workbench.tree.indent": 30,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.colorCustomizations": {
+        "tree.indentGuidesStroke": "#05ef3c"
+    },
+    "workbench.colorTheme": "Dark Modern",
+}

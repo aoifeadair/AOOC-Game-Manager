@@ -1,0 +1,44 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "Ubuntu",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+	 	"ghcr.io/devcontainers/features/desktop-lite:1.2.5": {
+	 		"version": "latest",
+	 		"noVncVersion": "1.2.0",
+			"password": "codespaces",
+	 		"webPort": "6080",
+	 		"vncPort": "5901"
+	 	},
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "21.fx-zulu",
+			"jdkDistro": "zulu"
+		}
+	},
+	// Forward port for desktop-lite
+    "forwardPorts": [6080],
+	"portsAttributes": {
+		"6080": {
+			"label": "desktop",
+			// Open simple-browser to the container's forward port.
+			"onAutoForward": "openPreview"
+		}
+	},
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "root",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"redhat.java",
+				"vscjava.vscode-java-debug",
+				"vscjava.vscode-java-dependency",
+				"bierner.markdown-mermaid",
+				"github.copilot@prerelease",
+				"github.copilot-chat@prerelease"
+			]
+		}
+	}
+}
