@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Manages the collection of Game objects.
- * Provides methods for adding, removing, searching, saving and loading games.
+ * Provides methods for adding, removing, searching, sorting,
+ * filtering, statistics, saving and loading games.
  */
 public class GameManager {
 
@@ -32,7 +35,9 @@ public class GameManager {
      * @return true if a game was removed, otherwise false
      */
     public boolean removeGame(String id) {
-        return games.removeIf(game -> game.getId().equalsIgnoreCase(id));
+        return games.removeIf(
+                game -> game.getId().equalsIgnoreCase(id)
+        );
     }
 
     /**
@@ -50,7 +55,7 @@ public class GameManager {
     }
 
     /**
-     * Finds a game using its title.
+     * Finds a game using its exact title.
      * Uses the Stream API and a lambda expression.
      *
      * @param title the title to search for
@@ -60,6 +65,88 @@ public class GameManager {
         return games.stream()
                 .filter(game -> game.getTitle().equalsIgnoreCase(title))
                 .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Searches for games whose title contains the supplied text.
+     *
+     * @param searchText the text to search for
+     * @return a list containing matching games
+     */
+    public List<Game> searchGames(String searchText) {
+        return games.stream()
+                .filter(game -> game.getTitle()
+                        .toLowerCase()
+                        .contains(searchText.toLowerCase()))
+                .toList();
+    }
+
+    /**
+     * Filters games by genre.
+     *
+     * @param genre the genre to filter by
+     * @return a list of matching games
+     */
+    public List<Game> filterByGenre(String genre) {
+        return games.stream()
+                .filter(game -> game.getGenre()
+                        .equalsIgnoreCase(genre))
+                .toList();
+    }
+
+    /**
+     * Sorts the collection alphabetically by game title.
+     */
+    public void sortByTitle() {
+        games.sort(
+                Comparator.comparing(
+                        Game::getTitle,
+                        String.CASE_INSENSITIVE_ORDER
+                )
+        );
+    }
+
+    /**
+     * Sorts the collection by rating from highest to lowest.
+     */
+    public void sortByRating() {
+        games.sort(
+                Comparator.comparingDouble(Game::getRating)
+                        .reversed()
+        );
+    }
+
+    /**
+     * Sorts the collection by release year from newest to oldest.
+     */
+    public void sortByYear() {
+        games.sort(
+                Comparator.comparingInt(Game::getReleaseYear)
+                        .reversed()
+        );
+    }
+
+    /**
+     * Calculates the average rating of all games.
+     *
+     * @return the average rating, or 0 if the collection is empty
+     */
+    public double getAverageRating() {
+        return games.stream()
+                .mapToDouble(Game::getRating)
+                .average()
+                .orElse(0.0);
+    }
+
+    /**
+     * Finds the highest-rated game.
+     *
+     * @return the highest-rated game, or null if the collection is empty
+     */
+    public Game getHighestRatedGame() {
+        return games.stream()
+                .max(Comparator.comparingDouble(Game::getRating))
                 .orElse(null);
     }
 
@@ -88,12 +175,16 @@ public class GameManager {
      */
     public void saveToFile(String fileName) {
         try (ObjectOutputStream outputStream =
-                     new ObjectOutputStream(new FileOutputStream(fileName))) {
+                     new ObjectOutputStream(
+                             new FileOutputStream(fileName)
+                     )) {
 
             outputStream.writeObject(games);
 
         } catch (IOException e) {
-            System.err.println("Error saving games: " + e.getMessage());
+            System.err.println(
+                    "Error saving games: " + e.getMessage()
+            );
         }
     }
 
@@ -105,12 +196,16 @@ public class GameManager {
     @SuppressWarnings("unchecked")
     public void loadFromFile(String fileName) {
         try (ObjectInputStream inputStream =
-                     new ObjectInputStream(new FileInputStream(fileName))) {
+                     new ObjectInputStream(
+                             new FileInputStream(fileName)
+                     )) {
 
             games = (ArrayList<Game>) inputStream.readObject();
 
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error loading games: " + e.getMessage());
+            System.err.println(
+                    "Error loading games: " + e.getMessage()
+            );
         }
     }
 }
