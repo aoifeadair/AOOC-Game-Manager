@@ -73,6 +73,15 @@ public class GameManager {
     }
 
     /**
+     * Returns the full list of games currently stored.
+     *
+     * @return the ArrayList containing all games
+     */
+    public ArrayList<Game> getGames() {
+        return games;
+    }
+
+    /**
      * Saves the complete game collection to a file using object serialisation.
      *
      * @param fileName the file to save the collection to
