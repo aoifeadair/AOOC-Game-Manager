@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -16,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -26,8 +28,8 @@ import java.util.Optional;
 
 /**
  * Main is the entry point of the GameVault JavaFX application.
- * It provides the user with access to the required core operations
- * along with enhanced searching, filtering, sorting and statistics.
+ * It provides access to all required core operations along with
+ * enhanced searching, filtering, sorting and collection statistics.
  */
 public class Main extends Application {
 
@@ -37,7 +39,7 @@ public class Main extends Application {
     /** Displays the game collection in table form. */
     private TableView<Game> gameTable = new TableView<>();
 
-    /** Search field used to filter games by title. */
+    /** Search field used to search games by title or ID. */
     private TextField searchField = new TextField();
 
     /** Drop-down menu used to filter games by genre. */
@@ -53,12 +55,10 @@ public class Main extends Application {
     private Label averageLabel = new Label("Average Rating: 0.0");
 
     /** Displays the highest-rated game. */
-    private Label highestRatedLabel =
-            new Label("Highest Rated: None");
+    private Label highestRatedLabel = new Label("Highest Rated: None");
 
     /** File used to save and load the serialised game database. */
-    private static final String FILE_NAME =
-            "resources/games.ser";
+    private static final String FILE_NAME = "resources/games.ser";
 
     /**
      * Builds and displays the main GameVault window.
@@ -68,54 +68,46 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        /** Displays the main application title. */
-        Label titleLabel =
-                new Label("GameVault - Game Collection Manager");
+        /** Main application title. */
+        Label titleLabel = new Label("GAMEVAULT");
+        titleLabel.getStyleClass().add("title-label");
+
+        /** Subtitle displayed underneath the main title. */
+        Label subtitleLabel = new Label("Personal Game Collection Manager");
+        subtitleLabel.getStyleClass().add("subtitle-label");
 
         /** Column used to display each game's unique ID. */
-        TableColumn<Game, String> idColumn =
-                new TableColumn<>("ID");
-
+        TableColumn<Game, String> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(
                 new PropertyValueFactory<>("id")
         );
 
         /** Column used to display each game's title. */
-        TableColumn<Game, String> titleColumn =
-                new TableColumn<>("Title");
-
+        TableColumn<Game, String> titleColumn = new TableColumn<>("Title");
         titleColumn.setCellValueFactory(
                 new PropertyValueFactory<>("title")
         );
 
         /** Column used to display each game's genre. */
-        TableColumn<Game, String> genreColumn =
-                new TableColumn<>("Genre");
-
+        TableColumn<Game, String> genreColumn = new TableColumn<>("Genre");
         genreColumn.setCellValueFactory(
                 new PropertyValueFactory<>("genre")
         );
 
         /** Column used to display each game's platform. */
-        TableColumn<Game, String> platformColumn =
-                new TableColumn<>("Platform");
-
+        TableColumn<Game, String> platformColumn = new TableColumn<>("Platform");
         platformColumn.setCellValueFactory(
                 new PropertyValueFactory<>("platform")
         );
 
         /** Column used to display each game's release year. */
-        TableColumn<Game, Integer> yearColumn =
-                new TableColumn<>("Year");
-
+        TableColumn<Game, Integer> yearColumn = new TableColumn<>("Year");
         yearColumn.setCellValueFactory(
                 new PropertyValueFactory<>("releaseYear")
         );
 
         /** Column used to display each game's rating. */
-        TableColumn<Game, Double> ratingColumn =
-                new TableColumn<>("Rating");
-
+        TableColumn<Game, Double> ratingColumn = new TableColumn<>("Rating");
         ratingColumn.setCellValueFactory(
                 new PropertyValueFactory<>("rating")
         );
@@ -129,40 +121,60 @@ public class Main extends Application {
                 ratingColumn
         );
 
-        gameTable.setPrefHeight(320);
+        gameTable.setPrefHeight(300);
 
         gameTable.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY
         );
 
+        idColumn.setMaxWidth(1f * Integer.MAX_VALUE * 10);
+        titleColumn.setMaxWidth(1f * Integer.MAX_VALUE * 28);
+        genreColumn.setMaxWidth(1f * Integer.MAX_VALUE * 20);
+        platformColumn.setMaxWidth(1f * Integer.MAX_VALUE * 16);
+        yearColumn.setMaxWidth(1f * Integer.MAX_VALUE * 12);
+        ratingColumn.setMaxWidth(1f * Integer.MAX_VALUE * 14);
+
+        gameTable.setPlaceholder(
+                new Label(
+                        "No games to display. Load the database or add a game."
+                )
+        );
+
         /** Loads the saved game database. */
         Button loadButton = new Button("Load DB");
+        loadButton.getStyleClass().add("secondary-button");
 
-        /** Adds a new game. */
-        Button addButton = new Button("Add Game");
+        /** Saves the current game database. */
+        Button saveButton = new Button("Save DB");
+        saveButton.getStyleClass().add("primary-button");
+
+        /** Adds a new game to the collection. */
+        Button addButton = new Button("+ Add Game");
+        addButton.getStyleClass().add("primary-button");
 
         /** Deletes an existing game. */
-        Button deleteButton = new Button("Delete Game");
+        Button deleteButton = new Button("Delete");
+        deleteButton.getStyleClass().add("danger-button");
 
-        /** Finds an exact game using ID or title. */
-        Button findButton = new Button("Find Game");
+        /** Finds an exact game using its ID or title. */
+        Button findButton = new Button("Find");
 
         /** Displays collection statistics. */
-        Button totalButton = new Button("Show Total");
+        Button totalButton = new Button("Statistics");
 
-        /** Saves the current database. */
-        Button saveButton = new Button("Save DB");
-
-        /** Clears active search and filtering controls. */
-        Button clearFiltersButton = new Button("Clear Filters");
+        /** Clears search and filtering controls. */
+        Button clearFiltersButton = new Button("Clear");
 
         /** Closes the application. */
         Button quitButton = new Button("Quit");
+        quitButton.getStyleClass().add("quit-button");
 
-        searchField.setPromptText("Search games by title...");
+        searchField.setPromptText("Search title or ID...");
+        searchField.setPrefWidth(220);
 
         genreFilter.getItems().add("All Genres");
         genreFilter.setValue("All Genres");
+        genreFilter.setPrefWidth(140);
 
         sortOptions.getItems().addAll(
                 "Default",
@@ -172,6 +184,7 @@ public class Main extends Application {
         );
 
         sortOptions.setValue("Default");
+        sortOptions.setPrefWidth(145);
 
         loadButton.setOnAction(event -> {
             gameManager.loadFromFile(FILE_NAME);
@@ -186,14 +199,6 @@ public class Main extends Application {
             );
         });
 
-        addButton.setOnAction(event -> addGame());
-
-        deleteButton.setOnAction(event -> deleteGame());
-
-        findButton.setOnAction(event -> findGame());
-
-        totalButton.setOnAction(event -> showStatistics());
-
         saveButton.setOnAction(event -> {
             gameManager.saveToFile(FILE_NAME);
 
@@ -203,7 +208,13 @@ public class Main extends Application {
             );
         });
 
-        quitButton.setOnAction(event -> stage.close());
+        addButton.setOnAction(event -> addGame());
+
+        deleteButton.setOnAction(event -> deleteGame());
+
+        findButton.setOnAction(event -> findGame());
+
+        totalButton.setOnAction(event -> showStatistics());
 
         clearFiltersButton.setOnAction(event -> {
             searchField.clear();
@@ -212,68 +223,189 @@ public class Main extends Application {
             refreshTable();
         });
 
+        quitButton.setOnAction(event -> stage.close());
+
         searchField.textProperty().addListener(
-                (observable, oldValue, newValue) ->
-                        refreshTable()
+                (observable, oldValue, newValue) -> refreshTable()
         );
 
-        genreFilter.setOnAction(event -> refreshTable());
+        genreFilter.setOnAction(
+                event -> refreshTable()
+        );
 
         sortOptions.setOnAction(event -> {
             applySorting();
             refreshTable();
         });
 
-        /** Holds the database buttons. */
+        /** Holds the title and subtitle. */
+        VBox titleBox = new VBox(
+                2,
+                titleLabel,
+                subtitleLabel
+        );
+
+        HBox.setHgrow(
+                titleBox,
+                Priority.ALWAYS
+        );
+
+        /** Holds database controls on the right of the header. */
         HBox databaseButtons = new HBox(
-                10,
+                8,
                 loadButton,
                 saveButton
         );
 
-        /** Holds search, filtering and sorting controls. */
-        HBox filterControls = new HBox(
+        databaseButtons.setAlignment(Pos.CENTER_RIGHT);
+
+        /** Top section containing branding and database controls. */
+        HBox header = new HBox(
+                15,
+                titleBox,
+                databaseButtons
+        );
+
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.getStyleClass().add("header");
+
+        /** Label describing the search section. */
+        Label searchLabel = new Label("Search & Filter");
+        searchLabel.getStyleClass().add("section-label");
+
+        /** First row of search controls. */
+        HBox filterRowOne = new HBox(
                 10,
                 searchField,
-                genreFilter,
+                genreFilter
+        );
+
+        filterRowOne.setAlignment(Pos.CENTER_LEFT);
+
+        HBox.setHgrow(
+                searchField,
+                Priority.ALWAYS
+        );
+
+        searchField.setMaxWidth(Double.MAX_VALUE);
+
+        /** Second row of sorting controls. */
+        HBox filterRowTwo = new HBox(
+                10,
                 sortOptions,
                 clearFiltersButton
         );
 
+        filterRowTwo.setAlignment(Pos.CENTER_LEFT);
+
+        /** Holds the search and filtering controls in two rows. */
+        VBox filterControls = new VBox(
+                8,
+                filterRowOne,
+                filterRowTwo
+        );
+
+        /** Holds the collection statistics. */
+        HBox statisticsBox = new HBox(
+                10,
+                createStatCard(totalLabel),
+                createStatCard(averageLabel),
+                createStatCard(highestRatedLabel)
+        );
+
+        statisticsBox.setAlignment(Pos.CENTER);
+
+        HBox.setHgrow(
+                statisticsBox.getChildren().get(0),
+                Priority.ALWAYS
+        );
+
+        HBox.setHgrow(
+                statisticsBox.getChildren().get(1),
+                Priority.ALWAYS
+        );
+
+        HBox.setHgrow(
+                statisticsBox.getChildren().get(2),
+                Priority.ALWAYS
+        );
+
         /** Holds the main management buttons. */
         HBox actionButtons = new HBox(
-                10,
+                8,
                 addButton,
                 deleteButton,
                 findButton,
                 totalButton
         );
 
-        /** Holds the collection statistics. */
-        HBox statisticsBox = new HBox(
-                25,
-                totalLabel,
-                averageLabel,
-                highestRatedLabel
-        );
+        actionButtons.setAlignment(Pos.CENTER_LEFT);
 
-        /** Main vertical layout used by GameVault. */
-        VBox root = new VBox(
-                15,
-                titleLabel,
-                databaseButtons,
-                filterControls,
-                gameTable,
-                statisticsBox,
+        /** Bottom bar containing management controls and Quit. */
+        HBox bottomBar = new HBox(
+                10,
                 actionButtons,
                 quitButton
         );
 
-        root.setPadding(new Insets(20));
+        HBox.setHgrow(
+                actionButtons,
+                Priority.ALWAYS
+        );
+
+        bottomBar.setAlignment(Pos.CENTER);
+
+        /** Main vertical layout used by GameVault. */
+        VBox root = new VBox(
+                14,
+                header,
+                searchLabel,
+                filterControls,
+                gameTable,
+                statisticsBox,
+                bottomBar
+        );
+
+        root.setPadding(new Insets(18));
+
+        /** Main JavaFX scene. */
+        Scene scene = new Scene(
+                root,
+                820,
+                600
+        );
+
+        scene.getStylesheets().add(
+                getClass()
+                        .getResource("/styles.css")
+                        .toExternalForm()
+        );
 
         stage.setTitle("GameVault");
-        stage.setScene(new Scene(root, 1000, 600));
+        stage.setMinWidth(760);
+        stage.setMinHeight(560);
+        stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * Creates a styled statistics card containing a label.
+     *
+     * @param label the statistic label to display
+     * @return a VBox representing the statistics card
+     */
+    private VBox createStatCard(Label label) {
+
+        /** Container used to display one statistic. */
+        VBox card = new VBox(label);
+
+        card.setAlignment(Pos.CENTER);
+        card.setPadding(new Insets(12));
+        card.setMinWidth(0);
+        card.setMaxWidth(Double.MAX_VALUE);
+        card.getStyleClass().add("stat-card");
+
+        return card;
     }
 
     /**
@@ -366,12 +498,14 @@ public class Main extends Application {
         try {
 
             /** Converted numeric release year. */
-            int releaseYear =
-                    Integer.parseInt(yearText.trim());
+            int releaseYear = Integer.parseInt(
+                    yearText.trim()
+            );
 
             /** Converted numeric game rating. */
-            double rating =
-                    Double.parseDouble(ratingText.trim());
+            double rating = Double.parseDouble(
+                    ratingText.trim()
+            );
 
             /** Stores the current calendar year. */
             int currentYear = Year.now().getValue();
@@ -387,6 +521,7 @@ public class Main extends Application {
             }
 
             if (rating < 0 || rating > 10) {
+
                 showMessage(
                         "Invalid Rating",
                         "The rating must be between 0 and 10."
@@ -431,9 +566,11 @@ public class Main extends Application {
      */
     private void deleteGame() {
 
-        /** Currently selected game in the TableView. */
+        /** Currently selected game in the table. */
         Game selectedGame =
-                gameTable.getSelectionModel().getSelectedItem();
+                gameTable
+                        .getSelectionModel()
+                        .getSelectedItem();
 
         /** ID of the game that should be removed. */
         String id;
@@ -461,18 +598,23 @@ public class Main extends Application {
                 gameManager.findGameById(id);
 
         if (gameToDelete == null) {
+
             showMessage(
                     "Game Not Found",
                     "No game with that ID was found."
             );
+
             return;
         }
 
         /** Confirmation dialog shown before deletion. */
         Alert confirmation =
-                new Alert(Alert.AlertType.CONFIRMATION);
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
 
         confirmation.setTitle("Confirm Delete");
+
         confirmation.setHeaderText(
                 "Delete " + gameToDelete.getTitle() + "?"
         );
@@ -515,14 +657,18 @@ public class Main extends Application {
 
         if (searchText == null
                 || searchText.trim().isEmpty()) {
+
             return;
         }
 
-        /** Stores a matching Game object if found. */
+        /** Stores a matching game if one is found. */
         Game game =
-                gameManager.findGameById(searchText.trim());
+                gameManager.findGameById(
+                        searchText.trim()
+                );
 
         if (game == null) {
+
             game = gameManager.findGameByTitle(
                     searchText.trim()
             );
@@ -530,7 +676,15 @@ public class Main extends Application {
 
         if (game != null) {
 
-            gameTable.getSelectionModel().select(game);
+            searchField.clear();
+            genreFilter.setValue("All Genres");
+
+            refreshTable();
+
+            gameTable
+                    .getSelectionModel()
+                    .select(game);
+
             gameTable.scrollTo(game);
 
             showMessage(
@@ -548,7 +702,7 @@ public class Main extends Application {
     }
 
     /**
-     * Sorts the GameManager collection using the selected option.
+     * Sorts the collection using the selected sorting option.
      */
     private void applySorting() {
 
@@ -571,45 +725,52 @@ public class Main extends Application {
     }
 
     /**
-     * Refreshes the TableView using the current search and genre filters.
+     * Refreshes the table using the active search and genre filters.
      */
     private void refreshTable() {
 
-        /** Temporary copy of all games displayed in the table. */
+        /** Temporary copy of all stored games. */
         List<Game> displayedGames =
-                new ArrayList<>(gameManager.getGames());
+                new ArrayList<>(
+                        gameManager.getGames()
+                );
 
         /** Current text entered into the search field. */
         String searchText =
-                searchField.getText().trim().toLowerCase();
+                searchField
+                        .getText()
+                        .trim()
+                        .toLowerCase();
 
-        /** Current genre selected in the filter menu. */
+        /** Current genre selected by the user. */
         String selectedGenre =
                 genreFilter.getValue();
 
-        displayedGames = displayedGames.stream()
-                .filter(game ->
-                        searchText.isEmpty()
-                                || game.getTitle()
-                                .toLowerCase()
-                                .contains(searchText)
-                                || game.getId()
-                                .toLowerCase()
-                                .contains(searchText)
-                )
-                .filter(game ->
-                        selectedGenre == null
-                                || selectedGenre.equals(
-                                "All Genres"
+        displayedGames =
+                displayedGames
+                        .stream()
+                        .filter(game ->
+                                searchText.isEmpty()
+                                        || game.getTitle()
+                                        .toLowerCase()
+                                        .contains(searchText)
+                                        || game.getId()
+                                        .toLowerCase()
+                                        .contains(searchText)
                         )
-                                || game.getGenre()
-                                .equalsIgnoreCase(
-                                        selectedGenre
+                        .filter(game ->
+                                selectedGenre == null
+                                        || selectedGenre.equals(
+                                        "All Genres"
                                 )
-                )
-                .toList();
+                                        || game.getGenre()
+                                        .equalsIgnoreCase(
+                                                selectedGenre
+                                        )
+                        )
+                        .toList();
 
-        /** Observable version of the filtered game list. */
+        /** Observable version of the filtered collection. */
         ObservableList<Game> tableData =
                 FXCollections.observableArrayList(
                         displayedGames
@@ -619,7 +780,7 @@ public class Main extends Application {
     }
 
     /**
-     * Updates the genre drop-down using genres from the collection.
+     * Updates the genre filter using genres found in the collection.
      */
     private void updateGenreFilter() {
 
@@ -629,7 +790,8 @@ public class Main extends Application {
 
         /** Unique sorted genres found in the collection. */
         List<String> genres =
-                gameManager.getGames()
+                gameManager
+                        .getGames()
                         .stream()
                         .map(Game::getGenre)
                         .distinct()
@@ -643,7 +805,8 @@ public class Main extends Application {
         genreFilter.getItems().addAll(genres);
 
         if (selectedGenre != null
-                && genreFilter.getItems()
+                && genreFilter
+                .getItems()
                 .contains(selectedGenre)) {
 
             genreFilter.setValue(selectedGenre);
@@ -655,7 +818,7 @@ public class Main extends Application {
     }
 
     /**
-     * Updates the statistics displayed beneath the table.
+     * Updates the statistics displayed underneath the table.
      */
     private void updateStatistics() {
 
@@ -672,12 +835,12 @@ public class Main extends Application {
                 gameManager.getHighestRatedGame();
 
         totalLabel.setText(
-                "Total Games: " + total
+                "Total Games\n" + total
         );
 
         averageLabel.setText(
                 String.format(
-                        "Average Rating: %.1f",
+                        "Average Rating\n%.1f / 10",
                         average
                 )
         );
@@ -685,17 +848,16 @@ public class Main extends Application {
         if (highest != null) {
 
             highestRatedLabel.setText(
-                    "Highest Rated: "
+                    "Highest Rated\n"
                             + highest.getTitle()
-                            + " ("
+                            + " — "
                             + highest.getRating()
-                            + ")"
             );
 
         } else {
 
             highestRatedLabel.setText(
-                    "Highest Rated: None"
+                    "Highest Rated\nNone"
             );
         }
     }
@@ -752,7 +914,8 @@ public class Main extends Application {
         dialog.setHeaderText(null);
         dialog.setContentText(message);
 
-        return dialog.showAndWait()
+        return dialog
+                .showAndWait()
                 .orElse(null);
     }
 
@@ -769,7 +932,9 @@ public class Main extends Application {
 
         /** Alert used to display information. */
         Alert alert =
-                new Alert(Alert.AlertType.INFORMATION);
+                new Alert(
+                        Alert.AlertType.INFORMATION
+                );
 
         alert.setTitle(title);
         alert.setHeaderText(null);
