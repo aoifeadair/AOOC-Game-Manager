@@ -1,66 +1,285 @@
 # Advanced Object Oriented Computing Project
 
-**Title:** Items Application Manager  
-**Name:** Sean Murphy  
-**Student ID:** G00123456  
-**Screencast Link:** [https://youtu.be/AbCdEf12345](https://youtu.be/AbCdEf12345)
+**Title:** GameVault - Game Collection Manager  
 
-> 💻 **Open this project in GitHub Codespaces:** on the repository page, click the green **Code** button, choose the **Codespaces** tab, then **Create codespace on `main`**. A ready-to-code cloud environment (with Java and JavaFX) builds automatically from the `.devcontainer` folder — no local install needed.
+**Name:** Aoife Adair  
+
+**Student ID:** G00463278  
+
+**Screencast Link:** To be added before submission
+
+> 💻 **Open this project in GitHub Codespaces:** click the green **Code** button, choose **Codespaces**, then create or open a codespace on `main`.
 
 ## Application Function
 
-> **Scope:** what your app does for the *user* — its features and how someone uses it. (Keep code structure for *Application Architecture* and UI design for *JavaFX*.)
+GameVault is a JavaFX application for managing a personal video game collection.
 
-Discuss, in detail, what the application does. Add a screenshot of the application **in use** (note: this is a *different* image to the architecture screenshot further down). 
+Each game contains:
+
+- Unique ID
+- Title
+- Genre
+- Platform
+- Release year
+- Rating
+
+The application supports the seven required operations:
+
+1. **Load DB**
+2. **Add Game**
+3. **Delete Game**
+4. **Find Game**
+5. **Show Statistics / Total**
+6. **Save DB**
+7. **Quit**
+
+Extra features include:
+
+- Live search by ID or title
+- Genre filtering
+- Sorting by title, rating and year
+- Collection statistics
+- Input validation
+- Delete confirmation
+- Custom JavaFX styling
+
+### Application Screenshot
+
+![GameVault in use](images/gamevault.png)
 
 ## Running the Application
 
-Provide step by step instructions on how to run your application. Are there any software installs required? 
-
-For example:
+GameVault was developed in GitHub Codespaces using Java 21 and JavaFX.
 
 1. Open the repository in **GitHub Codespaces**.
-2. Open the `Main` class.
-3. Click the **Run** icon in the top-right corner.
-4. *(add any further steps, and note any software that must be installed)*
+2. Open a terminal.
+3. Compile the project:
+
+```bash
+mkdir -p out
+javac -d out $(find src -name "*.java")
+```
+
+4. Copy the stylesheet:
+
+```bash
+cp resources/styles.css out/styles.css
+```
+
+5. Run the application:
+
+```bash
+java -cp out ie.atu.mypackage.Main
+```
+
+6. Open the forwarded noVNC desktop.
+7. Click **Load DB** to load the saved collection.
+
+No additional Java installation is required when using the supplied Codespaces environment.
 
 ## Project Requirements
 
-All requirements live in **one place** — the [**project brief**](project-brief.md). 
+GameVault meets the main requirements in the [**project brief**](project-brief.md).
 
-See: 
-1. Minimum Project Requirements 
-2. Minimum Feature Requirements
-3. Coding Standards
+The project includes:
 
-Make sure you have met every one and documented everything here before you submit.
+- `Main.java`
+- `Game.java`
+- `GameManager.java`
+- `ArrayList<Game>`
+- Stream API
+- Lambda expressions
+- File I/O
+- Exception handling
+- Object serialisation
+- JavaFX GUI
+- All seven required operations
+
+The `Game` class implements `Serializable`, and the collection is saved to:
+
+```text
+resources/games.ser
+```
+
+The `GameManager` class handles adding, removing, searching, saving, loading and counting games.
 
 ## Project Requirements Above and Beyond
 
-Discuss any application features or design elements that show you went above and beyond the basic requirements.
+GameVault includes several features beyond the minimum requirements.
+
+### TableView
+
+A JavaFX `TableView` displays each game's ID, title, genre, platform, year and rating.
+
+### Search and Filtering
+
+The user can search by title or ID and filter games by genre.
+
+### Sorting
+
+Games can be sorted by:
+
+- Title A-Z
+- Highest Rating
+- Newest First
+
+### Statistics
+
+The application displays:
+
+- Total games
+- Average rating
+- Highest-rated game
+
+### Validation
+
+The application checks for:
+
+- Duplicate IDs
+- Empty fields
+- Invalid years
+- Invalid ratings
+- Ratings outside 0-10
+
+### Custom Interface
+
+A custom `styles.css` file provides a dark theme, styled controls, table rows and statistics cards.
 
 ## Application Architecture
 
-> **Scope:** the *code* — your classes, their methods, and the data structure(s) (e.g. the `ArrayList`) used to store your objects. (Keep user-facing features for *Application Function* and UI design for *JavaFX*.)
+> **Scope:** the *code* — classes, methods and data structures used by the application.
 
-Discuss in detail how the application is structured. List all classes. List their methods and what they do. Discuss what structures are used to store data objects.
+### `Game.java`
 
-Add a screenshot or diagram of the application architecture, e.g. a class diagram (a *different* image to the in-use screenshot above).
+Represents one game and stores:
+
+- ID
+- Title
+- Genre
+- Platform
+- Release year
+- Rating
+
+It implements `Serializable`.
+
+### `GameManager.java`
+
+Stores the collection using:
+
+```java
+ArrayList<Game>
+```
+
+It contains methods for:
+
+- Add
+- Remove
+- Search
+- Total
+- Save
+- Load
+- Sort
+- Average rating
+- Highest-rated game
+
+### `Main.java`
+
+Creates the JavaFX interface and handles:
+
+- Buttons
+- TableView
+- Search
+- Filtering
+- Sorting
+- Statistics
+- Validation
+- Alerts
+- User input
+
+The class relationship is:
+
+```text
+Main
+  |
+  v
+GameManager
+  |
+  v
+ArrayList<Game>
+  |
+  v
+Game
+  |
+  v
+resources/games.ser
+```
+
+![GameVault Architecture](images/Game-Architecture.png)
 
 ## JavaFX
 
-> **Scope:** the *UI design* — layout, navigation, styling, and why you chose them. (Keep what the app does for *Application Function* and the code structure for *Application Architecture*.)
+> **Scope:** the *UI design* — layout, styling and navigation.
 
-Discuss the GUI design used. Discuss why you chose this design and any features you think make your application stand out.
+GameVault uses a dark JavaFX interface with:
 
-![alt text](images/javaFX.gif "My App")
+- Header
+- Search field
+- Genre filter
+- Sort menu
+- Game table
+- Statistics cards
+- Action buttons
+
+The interface uses `VBox` and `HBox` layouts to organise controls clearly.
+
+The custom stylesheet is stored in:
+
+```text
+resources/styles.css
+```
+
+The dark design was chosen to suit the theme of a video game collection application.
+
+![GameVault demonstration](images/javaFX.gif "GameVault")
 
 ## Roadblocks and Unfinished Functionality
 
-Discuss the issues you faced with creating your application. Provide possible solutions to these issues. What would you have done differently if you had to do this again? What did you not get finished?
+One challenge was running JavaFX inside GitHub Codespaces. The application is displayed through the supplied noVNC desktop.
+
+Another issue was the first interface being too wide for the noVNC window. This was fixed by reducing the default size, resizing the table columns and reorganising the search controls.
+
+Serialisation also required careful handling so the `ArrayList<Game>` could be safely saved and loaded.
+
+The application currently contains the required functionality and planned enhanced features.
+
+Possible future improvements include:
+
+- Editing games
+- Cover images
+- Completion status
+- Play-time tracking
+- More statistics
+- Automatic saving
+- Standalone Windows packaging
 
 ## Resources
 
-Provide links to resources used:
+* [Java Documentation](https://docs.oracle.com/en/java/)
+* [JavaFX Documentation](https://openjfx.io/)
+* [GitHub Documentation](https://docs.github.com/)
+* Course laboratory material
+* `project-brief.md`
+* Supplied AOOC project template
 
-* [Tutorialspoint](https://www.tutorialspoint.com/java/) - Java Tutorials site I found helpful
+### AI Assistance
+
+AI was used to assist with:
+
+- Java and JavaFX explanations
+- Debugging
+- Git commands
+- Interface improvements
+- Code review
+- Documentation
+
+The final application was tested during development and will be explained in the screencast.
