@@ -6,7 +6,7 @@
 
 **Student ID:** G00463278  
 
-**Screencast Link:** To be added before submission
+**Screencast Link:** https://youtu.be/gRfU6x0krMY
 
 > 💻 **Open this project in GitHub Codespaces:** click the green **Code** button, choose **Codespaces**, then create or open a codespace on `main`.
 
@@ -79,7 +79,7 @@ No additional Java installation is required when using the supplied Codespaces e
 
 ## Project Requirements
 
-GameVault meets the main requirements in the [**project brief**](project-brief.md).
+GameVault meets the minimum project and feature requirements in the [**project brief**](project-brief.md).
 
 The project includes:
 
@@ -91,7 +91,7 @@ The project includes:
 - Lambda expressions
 - File I/O
 - Exception handling
-- Object serialisation
+- Object serialisation and deserialisation
 - JavaFX GUI
 - All seven required operations
 
@@ -102,6 +102,8 @@ resources/games.ser
 ```
 
 The `GameManager` class handles adding, removing, searching, saving, loading and counting games.
+
+The project was developed in GitHub Codespaces and version controlled using Git and GitHub, with regular commits made throughout development.
 
 ## Project Requirements Above and Beyond
 
@@ -160,7 +162,7 @@ Represents one game and stores:
 - Release year
 - Rating
 
-It implements `Serializable`.
+It implements `Serializable`, allowing `Game` objects to be serialised and deserialised.
 
 ### `GameManager.java`
 
@@ -181,6 +183,8 @@ It contains methods for:
 - Sort
 - Average rating
 - Highest-rated game
+
+The manager also handles serialisation, deserialisation and file-related exception handling.
 
 ### `Main.java`
 
@@ -248,9 +252,11 @@ One challenge was running JavaFX inside GitHub Codespaces. The application is di
 
 Another issue was the first interface being too wide for the noVNC window. This was fixed by reducing the default size, resizing the table columns and reorganising the search controls.
 
-Serialisation also required careful handling so the `ArrayList<Game>` could be safely saved and loaded.
+Serialisation also required careful handling so the `ArrayList<Game>` could be safely saved and loaded using serialisation and deserialisation.
 
 The application currently contains the required functionality and planned enhanced features.
+
+If I were developing the application again, I would plan the final JavaFX layout earlier so that less resizing and interface adjustment would be required near the end of development.
 
 Possible future improvements include:
 
@@ -282,4 +288,4 @@ AI was used to assist with:
 - Code review
 - Documentation
 
-The final application was tested during development and will be explained in the screencast.
+The final application was tested during development, and I can explain the code and functionality demonstrated in the project screencast.
